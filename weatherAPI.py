@@ -2,15 +2,20 @@
 # Imports
 import requests, json
 
-def getWeatherData(city_name): 
+def requestFromFile():
+    
+    # Open File and Use getWeatherData
+    with open("city_request.txt") as f:
+        city = f.read()
+        getWeatherData(city)
+        
+def getWeatherData(city_name):
+    
     # Api Key
     api_key = "c76db9ba1f61d57b88d8a19ecb97b283"
 
     # Base url
     base_url = "http://api.openweathermap.org/data/2.5/weather?"
-
-    # Give city name
-    city_name = input("Enter city name : ")
     
     # complete_url variable to store
     # complete url address
@@ -31,46 +36,23 @@ def getWeatherData(city_name):
     # city is not found
     if x["cod"] != "404":
         
-        # store the value of "main"
-        # key in variable y
-        y = x["main"]
-    
-        # store the value corresponding
-        # to the "temp" key of y
-        current_temperature = y["temp"]
-    
-        # store the value corresponding
-        # to the "pressure" key of y
-        current_pressure = y["pressure"]
-    
-        # store the value corresponding
-        # to the "humidity" key of y
-        current_humidity = y["humidity"]
-    
-        # store the value of "weather"
-        # key in variable z
-        z = x["weather"]
-    
-        # store the value corresponding 
-        # to the "description" key at 
-        # the 0th index of z
-        weather_description = z[0]["description"]
-
-        print(x)
-        return x 
-
-        # print following values
-        print(" Temperature (in kelvin unit) = " +
-                        str(current_temperature) +
-            "\n atmospheric pressure (in hPa unit) = " +
-                        str(current_pressure) +
-            "\n humidity (in percentage) = " +
-                        str(current_humidity) +
-            "\n description = " +
-                        str(weather_description))
+        # Dump JSON
+        with open("weather_information.json",'w') as file:
+            json.dump(x,file)
     
     else:
         print(" City Not Found ")
 
 if __name__ == "__main__":
-    getWeatherData('Null')
+    
+    while True:
+        
+        
+        # Open Text,
+        try:
+            f = open('city_request.txt', 'r')
+            city = f.read().strip('\n')
+            if city != "":
+                getWeatherData(city)
+        except FileNotFoundError:
+            pass
